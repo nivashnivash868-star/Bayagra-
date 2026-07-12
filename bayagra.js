@@ -174,10 +174,10 @@ To analyze this systematically:
 
       // Check if user requests image generation
       if (lower.includes('image') || lower.includes('draw') || lower.includes('picture') || lower.includes('photo') || lower.includes('generate')) {
-        let selectedImg = '/cyberpunk_city.png';
+        let selectedImg = 'cyberpunk_city.png';
         let desc = 'A stunning cyberpunk street corner glowing with neon arcade signs and a futuristic vehicle.';
         if (lower.includes('castle') || lower.includes('forest') || lower.includes('fantasy') || lower.includes('magic')) {
-          selectedImg = '/fantasy_castle.png';
+          selectedImg = 'fantasy_castle.png';
           desc = 'A majestic fantasy castle perched on a rocky cliff in a glowing magical forest.';
         }
         

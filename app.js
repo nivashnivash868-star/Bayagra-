@@ -553,11 +553,11 @@ function initCreativeStudio() {
         clearInterval(progressInterval);
         
         // Load image
-        let src = '/cyberpunk_city.png';
+        let src = 'cyberpunk_city.png';
         let desc = `Cyberpunk city render for: "${escapeHtml(prompt)}"`;
         const lower = prompt.toLowerCase();
         if (lower.includes('castle') || lower.includes('forest') || lower.includes('fantasy') || lower.includes('magic')) {
-          src = '/fantasy_castle.png';
+          src = 'fantasy_castle.png';
           desc = `Fantasy landscape render for: "${escapeHtml(prompt)}"`;
         }
 
