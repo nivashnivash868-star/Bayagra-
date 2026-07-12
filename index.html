@@ -1,13 +1,728 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta http-equiv="refresh" content="0; url=./static/index.html">
-  <script type="text/javascript">
-    window.location.href = "./static/index.html";
-  </script>
-  <title>Redirecting to Bayagra Workspace...</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bayagra AI Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  Redirecting to the Bayagra application. If you are not redirected, <a href="./static/index.html">click here</a>.
+<body class="bayagra-dark">
+
+  <!-- LOGIN PAGE SCREEN -->
+  <div class="login-wrapper" id="login-container">
+    <div class="login-glow-bg"></div>
+    <div class="login-card">
+      <div class="login-card-head">
+        <div class="brand-glow-dot large"></div>
+        <h2>bayagra</h2>
+        <p>Unified AI Cockpit</p>
+      </div>
+      <form id="login-form" class="stack compact">
+        <label>
+          <span>Username</span>
+          <input type="text" id="login-username" placeholder="Enter username (admin)" required autocomplete="username">
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" id="login-password" placeholder="Enter password (admin)" required autocomplete="current-password">
+        </label>
+        <div class="login-helper-text">Hint: use <strong>admin</strong> / <strong>admin</strong></div>
+        <button type="submit" class="login-submit-btn">Unlock Workspace</button>
+        <p class="login-error-msg" id="login-error"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Grid Workspace Layout -->
+  <div class="workspace-wrapper" id="workspace-layout" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="workspace-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-glow-dot"></div>
+        <span class="brand-name">bayagra</span>
+        <span class="brand-badge">All-in-One AI</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-tab="dashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M10,20H5V14H10V20M19,20H14V12H19V20M19,10H14V5H19V10M10,12H5V5H10V12Z"/></svg>
+          <span>Brain & System</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="chat">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17.25C10.76,17.25 9.75,16.24 9.75,15C9.75,13.76 10.76,12.75 12,12.75C13.24,12.75 14.25,13.76 14.25,15C14.25,16.24 13.24,17.25 12,17.25M15.75,10.25C14.5,10.25 13.5,9.25 13.5,8C13.5,6.75 14.5,5.75 15.75,5.75C17,5.75 18,6.75 18,8C18,9.25 17,10.25 15.75,10.25Z"/></svg>
+          <span>Chat Arena</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="truecaller">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/></svg>
+          <span>Truecaller AI</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="perplexity">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/></svg>
+          <span>Perplexity Search</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="studio">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M13.5,8H12V13H13.5V8M16,8H14.5V15H16V8M18.5,8H17V11H18.5V8M21,8H19.5V14H21V8M3,5V19H21V17H5V5H3M7,8H5.5V13H7V8M9.5,8H8V15H9.5V8Z"/></svg>
+          <span>Creative Studio</span>
+        </button>
+        <button type="button" class="nav-item" data-tab="triage">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4M12,18A2,2 0 0,1 10,16A2,2 0 0,1 12,14A2,2 0 0,1 14,16A2,2 0 0,1 12,18M12,13A2,2 0 0,1 10,11A2,2 0 0,1 12,9A2,2 0 0,1 14,11A2,2 0 0,1 12,13Z"/></svg>
+          <span>Urban Triage Core</span>
+        </button>
+        <button type="button" class="nav-item logout-btn" id="sidebar-logout" style="margin-top: 10px; border-color: rgba(239, 68, 68, 0.15); color: #f87171;">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M16.56,5.44L15.11,6.89C16.84,8.27 18,10.5 18,13A6,6 0 0,1 12,19A6,6 0 0,1 6,13C6,10.5 7.16,8.27 8.89,6.89L7.44,5.44C5.36,7.22 4,9.95 4,13A8,8 0 0,0 12,21A8,8 0 0,0 20,13C20,9.95 18.64,7.22 16.56,5.44M13,3H11V13H13V3Z"/></svg>
+          <span>Log Out</span>
+        </button>
+      </nav>
+      
+      <div class="sidebar-status-card">
+        <div class="status-indicator online"></div>
+        <div class="status-info">
+          <p class="status-title">System Status</p>
+          <p class="status-desc">All AIs Connected & Active</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="workspace-main">
+      
+      <!-- HEADER BAR -->
+      <header class="workspace-header">
+        <div class="header-breadcrumb">
+          <span class="root-dir">workspace</span>
+          <span class="separator">/</span>
+          <span class="current-node" id="header-title">Brain & System</span>
+        </div>
+        <div class="header-actions">
+          <div class="api-mode-indicator">
+            <span class="label">Triage AI Model:</span>
+            <strong id="ai-mode" class="pulse-text">Loading...</strong>
+          </div>
+          <button type="button" class="action-btn glow-purple" id="btn-quick-call">
+            📞 Simulate Spam Call
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD -->
+      <section class="tab-panel active" id="panel-dashboard">
+        <div class="dashboard-grid">
+          <!-- Card Row -->
+          <div class="metric-card shadow-blue">
+            <div class="card-glow"></div>
+            <div class="metric-icon">🤖</div>
+            <div class="metric-info">
+              <span class="count-value" id="dashboard-total-ai">6</span>
+              <label class="count-label">Integrated Models</label>
+            </div>
+            <div class="metric-status">Claude, GPT, Gemini, Midjourney, Perplexity, ElevenLabs</div>
+          </div>
+          <div class="metric-card shadow-green">
+            <div class="card-glow"></div>
+            <div class="metric-icon">📞</div>
+            <div class="metric-info">
+              <span class="count-value" id="dashboard-blocked-calls">147</span>
+              <label class="count-label">Spam Calls Intercepted</label>
+            </div>
+            <div class="metric-status">Bayagra Spam Shield active</div>
+          </div>
+          <div class="metric-card shadow-amber">
+            <div class="card-glow"></div>
+            <div class="metric-icon">📋</div>
+            <div class="metric-info">
+              <span class="count-value" id="issue-count">0</span>
+              <label class="count-label">Total Urban Issues</label>
+            </div>
+            <div class="metric-status">Needs Review: <span id="review-count">0</span> | Urgent: <span id="urgent-count">0</span></div>
+          </div>
+        </div>
+
+        <div class="panel-section-grid">
+          <!-- Left: Systems Feed -->
+          <div class="glass-panel">
+            <div class="panel-head">
+              <h2>Bayagra System Monitor</h2>
+              <p>Active logs and neural gateway routing events.</p>
+            </div>
+            <div class="log-console" id="dashboard-logs">
+              <div class="log-line info"><span class="timestamp">[08:54:12]</span> Core network initialize. Loaded weights for Claude, ChatGPT, Gemini.</div>
+              <div class="log-line success"><span class="timestamp">[08:54:15]</span> Spam Shield Database synced. 48,291 telemarketers blocklisted.</div>
+              <div class="log-line info"><span class="timestamp">[08:54:20]</span> Connected to Urban Triage Service (Port 8080).</div>
+              <div class="log-line warn"><span class="timestamp">[08:55:01]</span> Blocked incoming call from +1 (800) 555-0199 (Scam score 99%).</div>
+              <div class="log-line info"><span class="timestamp">[08:55:45]</span> Speech synthesis core loaded. Voice profiles initialized.</div>
+            </div>
+          </div>
+          
+          <!-- Right: AI Consensus Engine Stats -->
+          <div class="glass-panel">
+            <div class="panel-head">
+              <h2>Model Gateway Latency</h2>
+              <p>Active polling rates and synthetic response stats.</p>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar-wrap">
+                <span class="bar-label">Claude 3.5 Sonnet (Logic) <span class="val">98% reliability</span></span>
+                <div class="bar-bg"><div class="bar-fill amber" style="width: 98%"></div></div>
+              </div>
+              <div class="progress-bar-wrap">
+                <span class="bar-label">ChatGPT-4o (Creativity) <span class="val">95% reliability</span></span>
+                <div class="bar-bg"><div class="bar-fill emerald" style="width: 95%"></div></div>
+              </div>
+              <div class="progress-bar-wrap">
+                <span class="bar-label">Gemini 1.5 Pro (Workspace) <span class="val">92% reliability</span></span>
+                <div class="bar-bg"><div class="bar-fill indigo" style="width: 92%"></div></div>
+              </div>
+              <div class="progress-bar-wrap">
+                <span class="bar-label">Truecaller ID Database <span class="val">99% sync rate</span></span>
+                <div class="bar-bg"><div class="bar-fill blue" style="width: 99%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CHAT HUB -->
+      <section class="tab-panel" id="panel-chat">
+        <div class="chat-workspace">
+          <!-- Chat Content Panel -->
+          <div class="chat-main-container">
+            <div class="chat-selectors">
+              <button type="button" class="model-select-btn active" data-model="consensus">
+                <span class="dot consensus"></span> Bayagra Consensus
+              </button>
+              <button type="button" class="model-select-btn" data-model="claude">
+                <span class="dot claude"></span> Claude 3.5
+              </button>
+              <button type="button" class="model-select-btn" data-model="chatgpt">
+                <span class="dot chatgpt"></span> ChatGPT-4o
+              </button>
+              <button type="button" class="model-select-btn" data-model="gemini">
+                <span class="dot gemini"></span> Gemini Pro
+              </button>
+            </div>
+            
+            <div class="chat-body" id="chat-conversation">
+              <div class="chat-message system">
+                <div class="avatar">🤖</div>
+                <div class="bubble">
+                  Welcome to the **Bayagra AI Arena**. 
+                  - **Bayagra Consensus Mode** will trigger discussions among Claude, ChatGPT, and Gemini to formulate a single consolidated response.
+                  - Toggle single models to access specialized panels (like **Claude Artifacts** or **Gemini Uploaders**).
+                </div>
+              </div>
+            </div>
+            
+            <div class="chat-input-area">
+              <!-- Drag and drop simulator indicator (visible only for Gemini) -->
+              <div class="file-drop-area" id="gemini-file-drop" style="display: none;">
+                Drag & Drop files here or click to simulate file upload for Gemini analysis.
+              </div>
+              
+              <form id="chat-input-form" class="chat-form">
+                <input type="text" id="chat-user-input" placeholder="Ask anything... (Try 'draw a cyberpunk city' or 'create a button component')" required>
+                <button type="submit" class="chat-submit-btn">Send</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Side Panels Drawer for Special Models -->
+          <div class="chat-drawer-container" id="chat-drawer">
+            <!-- Claude Artifacts Container -->
+            <div class="drawer-panel active" id="drawer-claude-artifacts">
+              <div class="drawer-head">
+                <h3>Claude Artifact Viewer</h3>
+                <span class="badge">Live Render</span>
+              </div>
+              <div class="artifact-content-area" id="artifact-render-target">
+                <div class="artifact-empty-state">
+                  <div class="icon">✨</div>
+                  <p>Artifacts generated by Claude will render interactively here in real-time.</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- ChatGPT GPTs & Voice Mode Container -->
+            <div class="drawer-panel" id="drawer-chatgpt-features">
+              <div class="drawer-head">
+                <h3>GPT Extensions</h3>
+                <span class="badge">Tools</span>
+              </div>
+              <div class="gpt-tools-stack">
+                <div class="gpts-selector-card">
+                  <strong>Active GPT Agent</strong>
+                  <select id="chatgpt-gpts-select">
+                    <option value="default">ChatGPT standard</option>
+                    <option value="code">DALL-E Art Critic</option>
+                    <option value="creative">Creative Narrative Designer</option>
+                  </select>
+                </div>
+                
+                <div class="voice-mode-section">
+                  <strong>Voice Interaction Simulator</strong>
+                  <div class="voice-wave-container">
+                    <div class="voice-pulse-circle" id="voice-pulse"></div>
+                  </div>
+                  <button type="button" class="btn-voice-toggle" id="btn-toggle-voice">Start Voice Session</button>
+                  <p class="voice-status-text" id="voice-status">Tap to speak with ChatGPT</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gemini Workspace & Multimodal Files Container -->
+            <div class="drawer-panel" id="drawer-gemini-features">
+              <div class="drawer-head">
+                <h3>Gemini Workspace</h3>
+                <span class="badge">Google API</span>
+              </div>
+              <div class="gemini-tools-stack">
+                <div class="multimodal-uploaded-files" id="gemini-uploaded-list">
+                  <p class="empty">No files uploaded. Drag a file into the input area to simulate.</p>
+                </div>
+                <div class="google-workspace-links">
+                  <strong>Workspace Integrations</strong>
+                  <div class="workspace-btn-grid">
+                    <button class="ws-btn" onclick="alert('Simulated: Exporting conversation to Google Docs.')">📝 Google Docs</button>
+                    <button class="ws-btn" onclick="alert('Simulated: Syncing metrics to Google Sheets.')">📊 Google Sheets</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: TRUECALLER AI -->
+      <section class="tab-panel" id="panel-truecaller">
+        <div class="panel-section-grid">
+          <!-- Reverse Search Console -->
+          <div class="glass-panel">
+            <div class="panel-head">
+              <h2>Smart Identity Reverse Lookup</h2>
+              <p>Search any phone number to identify the owner, location, and spam indicators.</p>
+            </div>
+            
+            <form id="truecaller-search-form" class="stack compact">
+              <label>
+                <span>Enter Phone Number</span>
+                <input type="tel" id="truecaller-phone-input" placeholder="e.g. 18005550199 or +91 98765 43210" required>
+              </label>
+              <button type="submit" class="search-submit">Search Identity</button>
+            </form>
+            
+            <div class="lookup-results-container" id="truecaller-results">
+              <div class="lookup-empty-state">
+                Enter a number above to run identity lookup.
+              </div>
+            </div>
+          </div>
+          
+          <!-- Incoming Call Shield Control -->
+          <div class="glass-panel">
+            <div class="panel-head">
+              <h2>Spam Shield Control</h2>
+              <p>Configure automated call screening and block rules.</p>
+            </div>
+            
+            <div class="shield-settings-stack">
+              <div class="setting-toggle-row">
+                <div class="text">
+                  <strong>Enable Spam Auto-Block</strong>
+                  <span class="desc">Automatically drop calls with spam score above 85%</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="setting-toggle-row">
+                <div class="text">
+                  <strong>AI Screener Assistant</strong>
+                  <span class="desc">Answer with Bayagra screening assistant for unknown callers</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+              
+              <div class="blocklist-wrap">
+                <strong>Current Blocklist (Simulated)</strong>
+                <ul class="blocklist-ul" id="truecaller-blocklist">
+                  <li>🚫 +1 (800) 555-0199 - Robo Medicare (Spam 99%)</li>
+                  <li>🚫 +1 (888) 222-1100 - Auto Insurance (Spam 95%)</li>
+                  <li>🚫 +91 99999 11111 - Sweepstakes Call (Spam 88%)</li>
+                </ul>
+                <form id="add-blocklist-form" class="split-input-btn">
+                  <input type="text" id="new-block-number" placeholder="+1..." required>
+                  <button type="submit">Block</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: PERPLEXITY SEARCH -->
+      <section class="tab-panel" id="panel-perplexity">
+        <div class="perplexity-container">
+          <div class="glass-panel">
+            <div class="panel-head">
+              <h2>Deep Search Assistant</h2>
+              <p>Perplexity-style search compiling structural markdown with interactive references.</p>
+            </div>
+            
+            <form id="perplexity-form" class="perplexity-search-bar">
+              <input type="text" id="perplexity-query" placeholder="Ask anything to search the web... (e.g. 'room temperature superconductor research')" required>
+              <button type="submit">Search</button>
+            </form>
+            
+            <div class="perplexity-results-layout">
+              <!-- Research Crawl Logs -->
+              <div class="search-steps-panel">
+                <h4>Research Steps</h4>
+                <div class="search-steps-list" id="perplexity-search-steps">
+                  <div class="empty">Ready to search.</div>
+                </div>
+              </div>
+              
+              <!-- Content Report -->
+              <div class="search-report-panel">
+                <h4>Report</h4>
+                <div class="report-content-body" id="perplexity-result-content">
+                  <div class="empty-state">
+                    Provide a query above to synthesize web sources.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: CREATIVE STUDIO -->
+      <section class="tab-panel" id="panel-studio">
+        <div class="panel-section-grid">
+          <!-- Left: Midjourney Image Generator -->
+          <div class="glass-panel">
+            <div class="panel-head">
+              <h2>Midjourney Studio</h2>
+              <p>Generate striking art concepts with customized dimensions and style factors.</p>
+            </div>
+            
+            <form id="midjourney-form" class="stack compact">
+              <label>
+                <span>Image Prompt</span>
+                <input type="text" id="midjourney-prompt" placeholder="e.g. cyberpunk city, fantasy castle, abstract line art" required>
+              </label>
+              <div class="split">
+                <label>
+                  <span>Aspect Ratio</span>
+                  <select id="midjourney-ratio">
+                    <option value="1:1">1:1 (Square)</option>
+                    <option value="16:9">16:9 (Landscape)</option>
+                    <option value="9:16">9:16 (Portrait)</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Style Preset</span>
+                  <select id="midjourney-style">
+                    <option value="cyberpunk">Photorealistic</option>
+                    <option value="fantasy">Anime / Digital Illustration</option>
+                    <option value="abstract">Vector / Minimalist</option>
+                  </select>
+                </label>
+              </div>
+              <button type="submit" class="generate-btn">Generate Art</button>
+            </form>
+            
+            <div class="studio-render-container" id="midjourney-render-area">
+              <div class="studio-empty-state">
+                Configure prompt and click Generate to run rendering engine.
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right: ElevenLabs Voice Laboratory -->
+          <div class="glass-panel">
+            <div class="panel-head">
+              <h2>ElevenLabs Voice Synthesis</h2>
+              <p>Convert text into speech using browser voice synthesizers, complete with visual waveform feed.</p>
+            </div>
+            
+            <form id="elevenlabs-form" class="stack compact">
+              <label>
+                <span>Input Text to Synthesize</span>
+                <textarea id="elevenlabs-text" rows="4" placeholder="Hello there! Welcome to Bayagra, your unified intelligence cockpit. Ready to orchestrate system diagnostics."></textarea>
+              </label>
+              <div class="split">
+                <label>
+                  <span>Voice Actor</span>
+                  <select id="elevenlabs-voice">
+                    <option value="female1">Rachel (Warm - US)</option>
+                    <option value="male1">Adam (Deep - US)</option>
+                    <option value="native">System Default (Local)</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Speed Rate</span>
+                  <input type="range" id="elevenlabs-rate" min="0.5" max="1.5" step="0.1" value="1.0">
+                </label>
+              </div>
+              
+              <!-- Waveform visualization bars -->
+              <div class="waveform-box">
+                <div class="waveform-label">Audio waveform output</div>
+                <div class="waveform-bars" id="tts-waveform">
+                  <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+                  <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+                  <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+                </div>
+              </div>
+              
+              <button type="submit" class="synthesize-btn">Synthesize Speech</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: ORIGINAL URBAN TRIAGE CORE -->
+      <section class="tab-panel" id="panel-triage">
+        
+        <!-- HERO ROW -->
+        <section class="hero-header-row">
+          <div class="hero-lead-text">
+            <h1>Municipal Triage Engine</h1>
+            <p class="lede">Review social complaints, update classification routing, or play classic Snake during systems inspection.</p>
+          </div>
+        </section>
+
+        <section class="grid-layout">
+          <!-- Left Panel: Intake form -->
+          <article class="panel">
+            <div class="panel-head">
+              <h2>New Report Intake</h2>
+              <p>Simulate WhatsApp or social intake into the AI triage pipeline.</p>
+            </div>
+            <form id="report-form" class="stack">
+              <label>
+                <span>Report text</span>
+                <textarea name="text" rows="4" placeholder="Example: Large pothole near school bus stop, children are slipping." required></textarea>
+              </label>
+              <div class="split">
+                <label>
+                  <span>Source</span>
+                  <select name="source">
+                    <option value="WHATSAPP">WhatsApp</option>
+                    <option value="SOCIAL">Social</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Area / Ward</span>
+                  <input name="area" type="text" placeholder="Ward 4" required>
+                </label>
+              </div>
+              <div class="split">
+                <label>
+                  <span>Source handle</span>
+                  <input name="sourceHandle" type="text" placeholder="citizen or @watchaccount" required>
+                </label>
+                <label>
+                  <span>Photo URL</span>
+                  <input name="imageUrl" type="url" placeholder="https://example.com/photo.jpg">
+                </label>
+              </div>
+              <button type="submit" class="submit-action-btn">Run AI triage</button>
+            </form>
+            <p id="form-message" class="form-message"></p>
+          </article>
+
+          <!-- Right Panel: Trends -->
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Trend Intelligence</h2>
+              <p>Area clusters and recurring issue patterns generated from normalized issue records.</p>
+            </div>
+            <div id="hotspots" class="stack compact"></div>
+            <div id="recurring" class="stack compact"></div>
+            <div id="anomalies" class="stack compact"></div>
+          </article>
+        </section>
+
+        <!-- SNAKE GAME PANEL -->
+        <section class="panel snake-section">
+          <div class="panel-head">
+            <h2>Snake Break</h2>
+            <p>A simple classic Snake game built into the existing console for a quick systems check.</p>
+          </div>
+          <div class="snake-layout">
+            <div>
+              <div class="snake-meta">
+                <div class="card snake-stat">
+                  <strong>Score</strong>
+                  <span id="snake-score">0</span>
+                </div>
+                <div class="card snake-stat">
+                  <strong>Status</strong>
+                  <span id="snake-status">Ready</span>
+                </div>
+              </div>
+              <div id="snake-board" class="snake-board" aria-label="Snake game board" role="grid"></div>
+            </div>
+            <div class="stack compact">
+              <div class="card font-small">
+                <strong>Controls</strong>
+                Arrow keys or WASD to move. Press space or P to pause. Press R to restart after a game over.
+              </div>
+              <div class="snake-actions">
+                <button type="button" id="snake-pause" class="sub-btn">Pause</button>
+                <button type="button" id="snake-restart" class="sub-btn">Restart</button>
+              </div>
+              <div class="snake-pad" aria-label="On-screen snake controls">
+                <button type="button" class="snake-dir up" data-direction="UP">Up</button>
+                <button type="button" class="snake-dir left" data-direction="LEFT">Left</button>
+                <button type="button" class="snake-dir down" data-direction="DOWN">Down</button>
+                <button type="button" class="snake-dir right" data-direction="RIGHT">Right</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- OPERATIONS QUEUE TABLE -->
+        <section class="panel operations-panel">
+          <div class="panel-head">
+            <h2>Operations Queue</h2>
+            <p>Review AI classifications, resolve low-confidence cases, and override routing when needed.</p>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Source</th>
+                  <th>Area</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Department</th>
+                  <th>Engine</th>
+                  <th>Review</th>
+                  <th>Status</th>
+                  <th>Summary</th>
+                </tr>
+              </thead>
+              <tbody id="issue-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- DETAIL & OVERRIDES -->
+        <section class="grid-layout lower">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Issue Detail</h2>
+              <p>Select an issue from the queue to inspect translated text, confidence, and duplicate flags.</p>
+            </div>
+            <div id="issue-detail" class="detail empty">Choose an issue to inspect.</div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Override Console</h2>
+              <p>Human-in-the-loop corrections feed future routing and operational playbooks.</p>
+            </div>
+            <form id="override-form" class="stack">
+              <input type="hidden" name="issueId">
+              <label>
+                <span>Reviewer</span>
+                <input name="reviewer" type="text" value="operations-lead" required>
+              </label>
+              <label>
+                <span>Category</span>
+                <select name="category"></select>
+              </label>
+              <label>
+                <span>Priority</span>
+                <select name="priority"></select>
+              </label>
+              <label>
+                <span>Department</span>
+                <select name="department"></select>
+              </label>
+              <label>
+                <span>Note</span>
+                <textarea name="note" rows="3" placeholder="Explain why the override was needed." required></textarea>
+              </label>
+              <button type="submit" class="submit-action-btn">Save override</button>
+            </form>
+
+            <form id="status-form" class="stack top-gap">
+              <input type="hidden" name="issueId">
+              <label>
+                <span>Status</span>
+                <select name="status"></select>
+              </label>
+              <label>
+                <span>Reviewer</span>
+                <input name="reviewer" type="text" value="operations-lead" required>
+              </label>
+              <label>
+                <span>Update note</span>
+                <textarea name="note" rows="2" placeholder="Example: inspection team dispatched." required></textarea>
+              </label>
+              <button type="submit" class="submit-action-btn">Update status</button>
+            </form>
+          </article>
+        </section>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FLOATING IPHONE CALL SIMULATOR MODAL OVERLAY -->
+  <div class="incoming-call-overlay" id="incoming-call-modal">
+    <div class="phone-case">
+      <div class="phone-screen">
+        <div class="phone-notch"></div>
+        
+        <div class="call-interface">
+          <div class="caller-meta-section">
+            <div class="caller-avatar-circle">👤</div>
+            <h2 id="modal-caller-name">Suspected Spam</h2>
+            <p id="modal-caller-number">+1 (800) 555-0199</p>
+            <div class="shield-label-glow">🛡️ Bayagra Spam Shield Active</div>
+          </div>
+          
+          <div class="call-dialog-transcripts" id="modal-call-logs">
+            <!-- Transcript messages stream here -->
+          </div>
+          
+          <div class="call-controls-grid">
+            <button type="button" class="call-btn btn-answer" id="btn-answer">
+              <span class="icon">📞</span>
+              <span class="btn-lbl">Answer</span>
+            </button>
+            <button type="button" class="call-btn btn-screen" id="btn-screen">
+              <span class="icon">🛡️</span>
+              <span class="btn-lbl">AI Screen</span>
+            </button>
+            <button type="button" class="call-btn btn-decline" id="btn-decline">
+              <span class="icon">❌</span>
+              <span class="btn-lbl">Decline</span>
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="snake-logic.js"></script>
+  <script src="snake-game.js"></script>
+  <script src="bayagra.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
