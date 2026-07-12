@@ -494,7 +494,7 @@ function initTruecallerConsole() {
         profile = {
           name: name,
           tag: 'Identified Caller',
-          location: locations[Math.random() * locations.length],
+          location: locations[Math.floor(Math.random() * locations.length)],
           company: occupations[Math.floor(Math.random() * occupations.length)],
           spamScore: spam,
           email: `${name.toLowerCase().replace(" ", ".")}@mailprovider.com`,
