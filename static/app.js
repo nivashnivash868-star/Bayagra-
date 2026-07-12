@@ -367,7 +367,11 @@ function initChatArena() {
 
     if (isQuestion && !isSpecialCmd && !phoneLookupResult) {
       bubbleContent.innerHTML = '<span class="status-msg ring-anim">🔍 Searching web & fetching actual details...</span>';
-      webSearchResult = await queryOnlineKnowledge(prompt);
+      try {
+        webSearchResult = await queryOnlineKnowledgeWithTimeout(prompt);
+      } catch (err) {
+        console.error("Web lookup failed: ", err);
+      }
     }
 
     setTimeout(() => {
