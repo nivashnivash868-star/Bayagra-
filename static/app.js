@@ -483,11 +483,27 @@ function initTruecallerConsole() {
       // Find or generate mock profile
       let profile = bayagraState.phoneLookupDb[phoneNum];
       if (!profile) {
-        // Generate random realistic user lookup
-        const firstNames = ["Emily", "David", "Michael", "Sophia", "Liam", "Carlos"];
-        const lastNames = ["Smith", "Rodriguez", "O'Connor", "Chen", "Patel", "Gomez"];
-        const locations = ["New York, NY", "San Francisco, CA", "Chicago, IL", "London, UK", "Mumbai, India"];
-        const occupations = ["Product Manager", "Financial Analyst", "Independent Contractor", "Real Estate Agent"];
+        // Generate random realistic user lookup based on country code
+        let firstNames, lastNames, locations, occupations;
+        
+        occupations = ["Product Manager", "Financial Analyst", "Independent Contractor", "Real Estate Agent", "Consultant"];
+        
+        if (phoneNum.startsWith("91")) {
+          // Indian details
+          firstNames = ["Rajesh", "Priya", "Amit", "Deepika", "Arjun", "Pooja", "Sanjay", "Anjali"];
+          lastNames = ["Kumar", "Sharma", "Patel", "Singh", "Nair", "Iyer", "Reddy", "Das"];
+          locations = ["Chennai, India", "Bangalore, India", "Mumbai, India", "New Delhi, India", "Hyderabad, India"];
+        } else if (phoneNum.startsWith("44")) {
+          // UK details
+          firstNames = ["Oliver", "Amelia", "George", "Isla", "Arthur", "Mia", "Harry", "Jack"];
+          lastNames = ["Smith", "Jones", "Taylor", "Brown", "Davies", "Evans", "Thomas", "Wilson"];
+          locations = ["London, UK", "Manchester, UK", "Birmingham, UK", "Leeds, UK", "Glasgow, UK"];
+        } else {
+          // US / Default details
+          firstNames = ["Emily", "David", "Michael", "Sophia", "Liam", "Carlos", "Emma", "James"];
+          lastNames = ["Smith", "Rodriguez", "O'Connor", "Chen", "Johnson", "Brown", "Davis"];
+          locations = ["New York, NY", "San Francisco, CA", "Chicago, IL", "London, UK", "Seattle, WA"];
+        }
         
         const name = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
         const spam = Math.floor(Math.random() * 45); // low-med spam score
