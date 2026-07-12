@@ -645,15 +645,23 @@ function initCreativeStudio() {
 // Original Municipal Operations Logic Integration
 // -------------------------------------------------------------
 async function loadMetadata() {
-  const response = await fetch("/api/departments");
-  const data = await response.json();
-  state.departments = data.departments;
-  state.categories = data.categories;
-  state.priorities = data.priorities;
-  state.statuses = data.statuses;
-  
-  // Set triage mode
-  document.getElementById("ai-mode").textContent = data.aiMode;
+  try {
+    const response = await fetch("/api/departments");
+    if (!response.ok) throw new Error("Status " + response.status);
+    const data = await response.json();
+    state.departments = data.departments;
+    state.categories = data.categories;
+    state.priorities = data.priorities;
+    state.statuses = data.statuses;
+    document.getElementById("ai-mode").textContent = data.aiMode;
+  } catch (e) {
+    console.warn("API Server not found. Using local mock metadata.");
+    state.departments = ["Sanitation Department", "Traffic Operations Office", "Water Management", "Energy Grid Operations", "Public Health"];
+    state.categories = ["POTHOLE", "GARBAGE", "WATER_LEAK", "POWER_OUTAGE", "STREETLIGHT"];
+    state.priorities = ["LOW", "MEDIUM", "HIGH", "URGENT"];
+    state.statuses = ["OPEN", "ASSIGNED", "IN_PROGRESS", "RESOLVED"];
+    document.getElementById("ai-mode").textContent = "Heuristic (Statically Hosted Demo)";
+  }
   
   // Populate dropdown lists
   populateSelect(document.querySelector('#override-form select[name="category"]'), state.categories);
@@ -663,9 +671,56 @@ async function loadMetadata() {
 }
 
 async function loadIssues() {
-  const response = await fetch("/api/issues");
-  const data = await response.json();
-  state.issues = data.issues;
+  try {
+    const response = await fetch("/api/issues");
+    if (!response.ok) throw new Error("Status " + response.status);
+    const data = await response.json();
+    state.issues = data.issues;
+  } catch (e) {
+    console.warn("API Server not found. Generating local mock issues.");
+    if (state.issues.length === 0) {
+      state.issues = [
+        {
+          id: 101,
+          source: "WHATSAPP",
+          area: "Ward 4",
+          category: "POTHOLE",
+          priority: "HIGH",
+          assignedDepartment: "Traffic Operations Office",
+          triageEngine: "Heuristic (Offline)",
+          requiresHumanReview: true,
+          status: "OPEN",
+          originalText: "There is a deep pothole near the school bus stop, children are slipping.",
+          translatedText: "There is a deep pothole near the school bus stop, children are slipping.",
+          detectedLanguage: "English",
+          classificationConfidence: 0.92,
+          routingConfidence: 0.88,
+          triageNotes: "Pothole poses immediate risk to schoolchildren.",
+          duplicateOf: "None",
+          overrides: []
+        },
+        {
+          id: 102,
+          source: "SOCIAL",
+          area: "Sector 7",
+          category: "POWER_OUTAGE",
+          priority: "URGENT",
+          assignedDepartment: "Energy Grid Operations",
+          triageEngine: "Heuristic (Offline)",
+          requiresHumanReview: false,
+          status: "ASSIGNED",
+          originalText: "Street lights are not working and the area is pitch black since yesterday.",
+          translatedText: "Street lights are not working and the area is pitch black since yesterday.",
+          detectedLanguage: "English",
+          classificationConfidence: 0.95,
+          routingConfidence: 0.94,
+          triageNotes: "Complete dark street, safety issue.",
+          duplicateOf: "None",
+          overrides: []
+        }
+      ];
+    }
+  }
   renderMetrics();
   renderTable();
   if (state.selectedIssueId && state.issues.some((issue) => issue.id === state.selectedIssueId)) {
@@ -674,9 +729,22 @@ async function loadIssues() {
 }
 
 async function loadTrends() {
-  const response = await fetch("/api/trends");
-  const data = await response.json();
-  renderTrends(data);
+  try {
+    const response = await fetch("/api/trends");
+    if (!response.ok) throw new Error("Status " + response.status);
+    const data = await response.json();
+    renderTrends(data);
+  } catch (e) {
+    console.warn("API Server not found. Using local mock trends.");
+    renderTrends({
+      hotspots: [
+        { area: "Ward 4", totalIssues: 3, topCategory: "POTHOLE" },
+        { area: "Sector 7", totalIssues: 2, topCategory: "POWER_OUTAGE" }
+      ],
+      recurringCategories: ["POTHOLE", "GARBAGE"],
+      anomalyNotes: ["Spike in streetlight issues reported in Sector 7 during night hours."]
+    });
+  }
 }
 
 function populateSelect(select, options) {
@@ -804,21 +872,52 @@ function bindMunicipalForms() {
     reportForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
-      const response = await fetch("/api/reports", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(form)
-      });
       const message = document.getElementById("form-message");
-      if (!response.ok) {
-        const data = await response.json();
-        message.textContent = data.error || "Could not create report.";
-        return;
+      
+      const text = form.get("text");
+      const source = form.get("source");
+      const area = form.get("area");
+      
+      try {
+        const response = await fetch("/api/reports", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(form)
+        });
+        if (!response.ok) throw new Error();
+        const issue = await response.json();
+        message.textContent = `Issue #${issue.id} triaged as ${issue.category} and routed to ${issue.assignedDepartment}.`;
+        event.currentTarget.reset();
+        await Promise.all([loadIssues(), loadTrends()]);
+      } catch (e) {
+        // Mock fallback submit
+        console.warn("Post report server failed. Mocking client-side submission.");
+        const newId = state.issues.length ? Math.max(...state.issues.map(i => i.id)) + 1 : 101;
+        const mockIssue = {
+          id: newId,
+          source: source,
+          area: area || "General",
+          category: "POTHOLE",
+          priority: "MEDIUM",
+          assignedDepartment: "Traffic Operations Office",
+          triageEngine: "Heuristic (Local Simulation)",
+          requiresHumanReview: true,
+          status: "OPEN",
+          originalText: text,
+          translatedText: text,
+          detectedLanguage: "English",
+          classificationConfidence: 0.85,
+          routingConfidence: 0.8,
+          triageNotes: "Simulated local report intake.",
+          duplicateOf: "None",
+          overrides: []
+        };
+        state.issues.unshift(mockIssue);
+        message.textContent = `[Simulation Mode] Issue #${mockIssue.id} triaged as POTHOLE and routed to Traffic Operations Office.`;
+        event.currentTarget.reset();
+        renderMetrics();
+        renderTable();
       }
-      const issue = await response.json();
-      message.textContent = `Issue #${issue.id} triaged as ${issue.category} and routed to ${issue.assignedDepartment}.`;
-      event.currentTarget.reset();
-      await Promise.all([loadIssues(), loadTrends()]);
     });
   }
 
@@ -828,12 +927,38 @@ function bindMunicipalForms() {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
       const issueId = form.get("issueId");
-      await fetch(`/api/issues/${issueId}/override`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(form)
-      });
-      await Promise.all([loadIssues(), loadTrends()]);
+      try {
+        const response = await fetch(`/api/issues/${issueId}/override`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(form)
+        });
+        if (!response.ok) throw new Error();
+        await Promise.all([loadIssues(), loadTrends()]);
+      } catch (e) {
+        console.warn("Post override server failed. Mocking client-side override.");
+        const issue = state.issues.find(i => i.id === Number(issueId));
+        if (issue) {
+          const category = form.get("category");
+          const priority = form.get("priority");
+          const department = form.get("department");
+          
+          issue.overrides.push({
+            field: "re-route",
+            previousValue: `${issue.category} / ${issue.assignedDepartment}`,
+            newValue: `${category} / ${department} (${priority})`,
+            reviewer: form.get("reviewer") || "admin"
+          });
+          
+          issue.category = category;
+          issue.priority = priority;
+          issue.assignedDepartment = department;
+          issue.requiresHumanReview = false;
+          
+          renderTable();
+          renderDetail(issue);
+        }
+      }
     });
   }
 
@@ -843,12 +968,22 @@ function bindMunicipalForms() {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
       const issueId = form.get("issueId");
-      await fetch(`/api/issues/${issueId}/status`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(form)
-      });
-      await loadIssues();
+      try {
+        const response = await fetch(`/api/issues/${issueId}/status`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(form)
+        });
+        if (!response.ok) throw new Error();
+        await loadIssues();
+      } catch (e) {
+        console.warn("Post status server failed. Mocking client-side status update.");
+        const issue = state.issues.find(i => i.id === Number(issueId));
+        if (issue) {
+          issue.status = form.get("status");
+          renderTable();
+        }
+      }
     });
   }
 }
