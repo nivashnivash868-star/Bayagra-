@@ -470,6 +470,15 @@ function initTruecallerConsole() {
   const blockForm = document.getElementById("add-blocklist-form");
   const blockInput = document.getElementById("new-block-number");
   const blocklistUl = document.getElementById("truecaller-blocklist");
+  
+  const regForm = document.getElementById("truecaller-registry-form");
+  const regPhone = document.getElementById("reg-phone");
+  const regName = document.getElementById("reg-name");
+  const regLocation = document.getElementById("reg-location");
+  const regCompany = document.getElementById("reg-company");
+  const regEmail = document.getElementById("reg-email");
+  const regTrust = document.getElementById("reg-trust");
+  const regStatus = document.getElementById("reg-status-msg");
 
   // Phone Lookup Search
   form.addEventListener("submit", (e) => {
@@ -490,8 +499,10 @@ function initTruecallerConsole() {
     resultsContainer.innerHTML = '<p class="status-msg ring-anim">🔍 Querying Bayagra Caller identity databases...</p>';
 
     setTimeout(() => {
-      // Find or generate mock profile
-      let profile = bayagraState.phoneLookupDb[phoneNum];
+      // Find custom registry first, then fallback to phoneLookupDb, then random generator
+      const customRegistry = JSON.parse(localStorage.getItem("bayagra_phone_registry") || "{}");
+      
+      let profile = customRegistry[phoneNum] || bayagraState.phoneLookupDb[phoneNum];
       if (!profile) {
         // Generate random realistic user lookup based on country code
         let firstNames, lastNames, locations, occupations;
@@ -560,6 +571,42 @@ function initTruecallerConsole() {
         </div>
       `;
     }, 1000);
+  });
+
+  // Handle Custom registry additions
+  regForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const phoneNum = regPhone.value.replace(/\D/g, "");
+    if (!phoneNum) return;
+
+    const customRegistry = JSON.parse(localStorage.getItem("bayagra_phone_registry") || "{}");
+    const selectedTrust = regTrust.value;
+    
+    let spam = 0;
+    if (selectedTrust === "Dangerous") spam = 95;
+    else if (selectedTrust === "Suspicious") spam = 60;
+    else spam = Math.floor(Math.random() * 10);
+
+    customRegistry[phoneNum] = {
+      name: regName.value.trim(),
+      tag: selectedTrust === 'Dangerous' || selectedTrust === 'Suspicious' ? 'Spam Alert' : 'Identified Caller',
+      location: regLocation.value.trim(),
+      company: regCompany.value.trim(),
+      email: regEmail.value.trim(),
+      trust: selectedTrust,
+      spamScore: spam
+    };
+
+    localStorage.setItem("bayagra_phone_registry", JSON.stringify(customRegistry));
+
+    regStatus.style.color = "var(--accent-chatgpt)";
+    regStatus.textContent = "✓ Identity saved successfully to database!";
+    
+    regForm.reset();
+
+    setTimeout(() => {
+      regStatus.textContent = "";
+    }, 4000);
   });
 
   // Blocklist builder
