@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.2">
+  <link rel="stylesheet" href="styles.css?v=1.3">
 </head>
 <body class="bayagra-dark">
 
@@ -345,7 +345,15 @@
             <form id="truecaller-search-form" class="stack compact">
               <label>
                 <span>Enter Phone Number</span>
-                <input type="tel" id="truecaller-phone-input" placeholder="e.g. 18005550199 or +91 98765 43210" required>
+                <div style="display: flex; gap: 8px;">
+                  <select id="truecaller-country" style="width: 120px; min-width: 120px; flex-shrink: 0; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--panel-border); color: white; border-radius: 12px; padding: 10px;">
+                    <option value="91">🇮🇳 +91</option>
+                    <option value="1">🇺🇸 +1</option>
+                    <option value="44">🇬🇧 +44</option>
+                    <option value="other">🌍 Other</option>
+                  </select>
+                  <input type="tel" id="truecaller-phone-input" placeholder="e.g. 7550319164" required style="flex: 1;">
+                </div>
               </label>
               <button type="submit" class="search-submit">Search Identity</button>
             </form>
@@ -757,9 +765,9 @@
     </div>
   </div>
 
-  <script src="snake-logic.js?v=1.2"></script>
-  <script src="snake-game.js?v=1.2"></script>
-  <script src="bayagra.js?v=1.2"></script>
-  <script src="app.js?v=1.2"></script>
+  <script src="snake-logic.js?v=1.3"></script>
+  <script src="snake-game.js?v=1.3"></script>
+  <script src="bayagra.js?v=1.3"></script>
+  <script src="app.js?v=1.3"></script>
 </body>
 </html>
