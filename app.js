@@ -39,11 +39,48 @@ async function bootstrap() {
 function initLogin() {
   const loginContainer = document.getElementById("login-container");
   const workspaceLayout = document.getElementById("workspace-layout");
+  
+  const loginSection = document.getElementById("login-section");
+  const signupSection = document.getElementById("signup-section");
+  
   const loginForm = document.getElementById("login-form");
+  const signupForm = document.getElementById("signup-form");
+  
   const usernameInput = document.getElementById("login-username");
   const passwordInput = document.getElementById("login-password");
-  const errorMsg = document.getElementById("login-error");
+  const loginErrorMsg = document.getElementById("login-error");
+  
+  const signupNameInput = document.getElementById("signup-name");
+  const signupEmailInput = document.getElementById("signup-email");
+  const signupUsernameInput = document.getElementById("signup-username");
+  const signupPasswordInput = document.getElementById("signup-password");
+  const signupConfirmInput = document.getElementById("signup-confirm");
+  const signupErrorMsg = document.getElementById("signup-error-msg");
+  
+  const linkToSignup = document.getElementById("link-to-signup");
+  const linkToLogin = document.getElementById("link-to-login");
   const logoutBtn = document.getElementById("sidebar-logout");
+
+  // Initialize mock users database in localStorage if empty
+  if (!localStorage.getItem("bayagra_users")) {
+    localStorage.setItem("bayagra_users", JSON.stringify({ "admin": "admin" }));
+  }
+
+  // Switch to Signup Panel
+  linkToSignup.addEventListener("click", (e) => {
+    e.preventDefault();
+    loginSection.style.display = "none";
+    signupSection.style.display = "block";
+    signupErrorMsg.textContent = "";
+  });
+
+  // Switch to Login Panel
+  linkToLogin.addEventListener("click", (e) => {
+    e.preventDefault();
+    signupSection.style.display = "none";
+    loginSection.style.display = "block";
+    loginErrorMsg.textContent = "";
+  });
 
   // Check current session state
   if (sessionStorage.getItem("bayagra_auth") === "true") {
@@ -61,8 +98,10 @@ function initLogin() {
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
 
-    if (username === "admin" && password === "admin") {
-      errorMsg.textContent = "";
+    const users = JSON.parse(localStorage.getItem("bayagra_users"));
+
+    if (users[username] === password) {
+      loginErrorMsg.textContent = "";
       sessionStorage.setItem("bayagra_auth", "true");
       
       // Animate fade out of login container
@@ -81,9 +120,59 @@ function initLogin() {
       }, 400);
 
     } else {
-      errorMsg.textContent = "Invalid username or password. Please try again.";
+      loginErrorMsg.textContent = "Invalid username or password. Please try again.";
       passwordInput.value = "";
     }
+  });
+
+  // Handle Sign Up submission
+  signupForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = signupNameInput.value.trim();
+    const email = signupEmailInput.value.trim();
+    const username = signupUsernameInput.value.trim();
+    const password = signupPasswordInput.value.trim();
+    const confirmPass = signupConfirmInput.value.trim();
+
+    const users = JSON.parse(localStorage.getItem("bayagra_users"));
+
+    if (users[username]) {
+      signupErrorMsg.textContent = "Username is already taken.";
+      return;
+    }
+
+    if (password !== confirmPass) {
+      signupErrorMsg.textContent = "Passwords do not match.";
+      return;
+    }
+
+    // Save new user
+    users[username] = password;
+    localStorage.setItem("bayagra_users", JSON.stringify(users));
+
+    // Auto log-in new user
+    signupErrorMsg.textContent = "";
+    sessionStorage.setItem("bayagra_auth", "true");
+    
+    // Animate fade out
+    loginContainer.style.opacity = "0";
+    loginContainer.style.transform = "scale(0.95)";
+    
+    setTimeout(() => {
+      loginContainer.style.display = "none";
+      workspaceLayout.style.display = "grid";
+      workspaceLayout.style.opacity = "0";
+      workspaceLayout.style.transition = "opacity 0.4s ease";
+      
+      setTimeout(() => {
+        workspaceLayout.style.opacity = "1";
+        
+        // Reset signup inputs
+        signupForm.reset();
+        signupSection.style.display = "none";
+        loginSection.style.display = "block";
+      }, 50);
+    }, 400);
   });
 
   // Handle Logout
@@ -104,7 +193,7 @@ function initLogin() {
         loginContainer.style.transform = "scale(1)";
         usernameInput.value = "";
         passwordInput.value = "";
-        errorMsg.textContent = "";
+        loginErrorMsg.textContent = "";
       }, 50);
     }, 400);
   });
