@@ -352,20 +352,16 @@ function initChatArena() {
       phoneLookupResult.number = digits;
     }
 
-    // 2. Fetch Web Search/Wikipedia details if it's a search question (and not a phone lookup)
+    // 2. Fetch Web Search/Wikipedia details if it's not a special command and not a phone lookup
     let webSearchResult = null;
     const lower = prompt.toLowerCase();
-    
-    const isQuestion = lower.startsWith("who") || lower.startsWith("what") || lower.startsWith("where") || 
-                       lower.startsWith("why") || lower.startsWith("how") || lower.startsWith("when") || 
-                       lower.startsWith("list") || lower.includes("tell me about") || lower.includes("search");
     
     const isSpecialCmd = lower.includes("who created") || lower.includes("who made") || lower.includes("creator") || 
                          lower.includes("who build") || lower.includes("developer") || lower.includes("developed by") ||
                          lower.includes("security") || lower.includes("image") || lower.includes("draw") || 
                          lower.includes("picture") || lower.includes("photo") || lower.includes("generate");
 
-    if (isQuestion && !isSpecialCmd && !phoneLookupResult) {
+    if (!isSpecialCmd && !phoneLookupResult) {
       bubbleContent.innerHTML = '<span class="status-msg ring-anim">🔍 Searching web & fetching actual details...</span>';
       try {
         webSearchResult = await queryOnlineKnowledgeWithTimeout(prompt);
