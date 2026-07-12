@@ -474,8 +474,18 @@ function initTruecallerConsole() {
   // Phone Lookup Search
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const phoneNum = input.value.replace(/\D/g, "");
-    if (!phoneNum) return;
+    const countrySelect = document.getElementById("truecaller-country");
+    let inputVal = input.value.replace(/\D/g, "");
+    if (!inputVal) return;
+
+    // Prepend country prefix if it's missing and dial code is selected
+    const selectedPrefix = countrySelect.value;
+    if (selectedPrefix !== "other") {
+      if (!inputVal.startsWith(selectedPrefix)) {
+        inputVal = selectedPrefix + inputVal;
+      }
+    }
+    const phoneNum = inputVal;
 
     resultsContainer.innerHTML = '<p class="status-msg ring-anim">🔍 Querying Bayagra Caller identity databases...</p>';
 
