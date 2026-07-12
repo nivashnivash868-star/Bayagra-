@@ -16,7 +16,9 @@ const bayagraState = {
     '15550192834': { name: 'Jane Doe', tag: 'Business', location: 'Seattle, WA', company: 'TechCorp CEO', spamScore: 0, email: 'jane.doe@techcorp.com', trust: 'Verified' },
     '919876543210': { name: 'Rajesh Kumar', tag: 'Personal', location: 'Bangalore, India', company: 'Software Architect', spamScore: 5, email: 'rajesh.kumar@urbanai.in', trust: 'Trusted' },
     '18005550199': { name: 'Premier Warranty Hub', tag: 'Telemarketer', location: 'Dallas, TX', company: 'Medicare & Auto Scams', spamScore: 99, email: 'unknown@scammail.net', trust: 'Dangerous' },
-    '442079460192': { name: 'Dr. Sarah Jenkins', tag: 'Health/Doctor', location: 'London, UK', company: 'NHS Specialist', spamScore: 12, email: 's.jenkins@nhs.net', trust: 'Verified' }
+    '442079460192': { name: 'Dr. Sarah Jenkins', tag: 'Health/Doctor', location: 'London, UK', company: 'NHS Specialist', spamScore: 12, email: 's.jenkins@nhs.net', trust: 'Verified' },
+    '917550319164': { name: 'Nivash', tag: 'Creator & Developer', location: 'Chennai, India', company: 'Bayagra Founder & Lead AI Engineer', spamScore: 0, email: 'nivash@urbanai.in', trust: 'Verified' },
+    '7550319164': { name: 'Nivash', tag: 'Creator & Developer', location: 'Chennai, India', company: 'Bayagra Founder & Lead AI Engineer', spamScore: 0, email: 'nivash@urbanai.in', trust: 'Verified' }
   },
   callSimulator: {
     active: false,
