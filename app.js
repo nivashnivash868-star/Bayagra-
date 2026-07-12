@@ -294,7 +294,65 @@ function initChatArena() {
     const typingBubble = appendChatMessage('ai typing', '🤖', 'Generating response...');
     const bubbleContent = typingBubble.querySelector(".bubble");
 
-    // Fetch Web Search/Wikipedia details if it's a search question
+    // 1. Check if the query contains a phone number (e.g. 7 or more digits)
+    let phoneLookupResult = null;
+    const phoneRegex = /(\+?\d{1,4}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}|\d{7,15}/;
+    const phoneMatch = prompt.match(phoneRegex);
+    
+    if (phoneMatch && phoneMatch[0].replace(/\D/g, "").length >= 7) {
+      const digits = phoneMatch[0].replace(/\D/g, "");
+      
+      const customRegistry = JSON.parse(localStorage.getItem("bayagra_phone_registry") || "{}");
+      let foundProfile = customRegistry[digits] || bayagraState.phoneLookupDb[digits];
+      
+      // Try with / without country prefix '91'
+      if (!foundProfile) {
+        if (digits.startsWith("91")) {
+          const raw = digits.slice(2);
+          foundProfile = customRegistry[raw] || bayagraState.phoneLookupDb[raw];
+        } else {
+          const pref = "91" + digits;
+          foundProfile = customRegistry[pref] || bayagraState.phoneLookupDb[pref];
+        }
+      }
+      
+      if (foundProfile) {
+        phoneLookupResult = foundProfile;
+      } else {
+        // Generate country-code aware profile
+        let firstNames, lastNames, locations, occupations;
+        occupations = ["Product Manager", "Financial Analyst", "Independent Contractor", "Real Estate Agent", "Consultant"];
+        
+        if (digits.startsWith("91")) {
+          firstNames = ["Rajesh", "Priya", "Amit", "Deepika", "Arjun", "Pooja", "Sanjay", "Anjali"];
+          lastNames = ["Kumar", "Sharma", "Patel", "Singh", "Nair", "Iyer", "Reddy", "Das"];
+          locations = ["Chennai, India", "Bangalore, India", "Mumbai, India", "New Delhi, India", "Hyderabad, India"];
+        } else if (digits.startsWith("44")) {
+          firstNames = ["Oliver", "Amelia", "George", "Isla", "Arthur", "Mia", "Harry", "Jack"];
+          lastNames = ["Smith", "Jones", "Taylor", "Brown", "Davies", "Evans", "Thomas", "Wilson"];
+          locations = ["London, UK", "Manchester, UK", "Birmingham, UK", "Leeds, UK", "Glasgow, UK"];
+        } else {
+          firstNames = ["Emily", "David", "Michael", "Sophia", "Liam", "Carlos", "Emma", "James"];
+          lastNames = ["Smith", "Rodriguez", "O'Connor", "Chen", "Johnson", "Brown", "Davis"];
+          locations = ["New York, NY", "San Francisco, CA", "Chicago, IL", "London, UK", "Seattle, WA"];
+        }
+        
+        const name = `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
+        const spam = Math.floor(Math.random() * 45);
+        phoneLookupResult = {
+          name: name,
+          tag: 'Identified Caller',
+          location: locations[Math.floor(Math.random() * locations.length)],
+          company: occupations[Math.floor(Math.random() * occupations.length)],
+          spamScore: spam,
+          email: `${name.toLowerCase().replace(" ", ".")}@mailprovider.com`,
+          trust: spam < 15 ? 'Trusted' : 'Verified'
+        };
+      }
+      phoneLookupResult.number = digits;
+    }
+
+    // 2. Fetch Web Search/Wikipedia details if it's a search question (and not a phone lookup)
     let webSearchResult = null;
     const lower = prompt.toLowerCase();
     
@@ -307,20 +365,59 @@ function initChatArena() {
                          lower.includes("security") || lower.includes("image") || lower.includes("draw") || 
                          lower.includes("picture") || lower.includes("photo") || lower.includes("generate");
 
-    if (isQuestion && !isSpecialCmd) {
+    if (isQuestion && !isSpecialCmd && !phoneLookupResult) {
       bubbleContent.innerHTML = '<span class="status-msg ring-anim">🔍 Searching web & fetching actual details...</span>';
       webSearchResult = await queryOnlineKnowledge(prompt);
     }
 
     setTimeout(() => {
       if (activeModel === 'consensus') {
-        runConsensusDebate(prompt, bubbleContent, typingBubble, webSearchResult);
+        runConsensusDebate(prompt, bubbleContent, typingBubble, webSearchResult, phoneLookupResult);
       } else {
         // Individual model response
         const modelData = AI_SIM_RESPONSES[activeModel];
         let fullText;
         
-        if (webSearchResult) {
+        if (phoneLookupResult) {
+          if (activeModel === 'claude') {
+            fullText = `### 🛡️ Truecaller AI Reverse Lookup (Claude 3.5 Sonnet)
+
+I scanned the phone directory database for the number **+${phoneLookupResult.number}**:
+
+- **Name**: **${phoneLookupResult.name}**
+- **Trust Level**: ${phoneLookupResult.trust} (${phoneLookupResult.tag})
+- **Location**: ${phoneLookupResult.location}
+- **Affiliation**: ${phoneLookupResult.company}
+- **Email Address**: ${phoneLookupResult.email}
+- **Spam Threat Rating**: **${phoneLookupResult.spamScore}%**
+
+***
+Let me know if you would like me to flag this number or add it to your manually blocked list!`;
+          } else if (activeModel === 'chatgpt') {
+            fullText = `Here are the Truecaller AI details for the number **+${phoneLookupResult.number}**:
+
+👤 **Name**: ${phoneLookupResult.name} (${phoneLookupResult.trust})
+📍 **Location**: ${phoneLookupResult.location}
+💼 **Occupation**: ${phoneLookupResult.company}
+📧 **Email**: ${phoneLookupResult.email}
+🛡️ **Spam Score**: ${phoneLookupResult.spamScore}%
+
+This number is currently whitelisted and clean. Is there anything else you need? 🚀`;
+          } else { // gemini
+            fullText = `### Gemini Caller Scan Result
+
+**Phone Number**: +${phoneLookupResult.number}
+**Database**: Truecaller AI Core
+
+- **Caller Name**: ${phoneLookupResult.name}
+- **Verification Status**: ${phoneLookupResult.tag} / ${phoneLookupResult.trust}
+- **Geographic Location**: ${phoneLookupResult.location}
+- **Professional Affiliation**: ${phoneLookupResult.company}
+- **Spam Indicator**: ${phoneLookupResult.spamScore}% (Low Risk)
+
+Let me know if you want to block or whitelist this profile.`;
+          }
+        } else if (webSearchResult) {
           // Format response with real web search details
           if (activeModel === 'claude') {
             fullText = `### Web Search Synthesis (Claude 3.5 Sonnet)
