@@ -241,11 +241,13 @@ function simulateStreamText(targetElement, fullText, callback) {
   const tempSpan = document.createElement("span");
   targetElement.appendChild(tempSpan);
   
+  const charsPerStep = 3; // stream 3 characters at a time for fast replies
   const interval = setInterval(() => {
     if (currentIndex < fullText.length) {
-      // Append characters
-      tempSpan.textContent += fullText[currentIndex];
-      currentIndex++;
+      // Append characters in chunks
+      const chunk = fullText.slice(currentIndex, currentIndex + charsPerStep);
+      tempSpan.textContent += chunk;
+      currentIndex += charsPerStep;
       
       // Auto scroll chat body
       const chatBody = targetElement.closest('.chat-body');
