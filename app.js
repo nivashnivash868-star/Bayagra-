@@ -278,7 +278,7 @@ function initChatArena() {
   });
 
   // Handle Form submit
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const prompt = input.value.trim();
     if (!prompt) return;
@@ -294,13 +294,68 @@ function initChatArena() {
     const typingBubble = appendChatMessage('ai typing', '🤖', 'Generating response...');
     const bubbleContent = typingBubble.querySelector(".bubble");
 
+    // Fetch Web Search/Wikipedia details if it's a search question
+    let webSearchResult = null;
+    const lower = prompt.toLowerCase();
+    
+    const isQuestion = lower.startsWith("who") || lower.startsWith("what") || lower.startsWith("where") || 
+                       lower.startsWith("why") || lower.startsWith("how") || lower.startsWith("when") || 
+                       lower.startsWith("list") || lower.includes("tell me about") || lower.includes("search");
+    
+    const isSpecialCmd = lower.includes("who created") || lower.includes("who made") || lower.includes("creator") || 
+                         lower.includes("who build") || lower.includes("developer") || lower.includes("developed by") ||
+                         lower.includes("security") || lower.includes("image") || lower.includes("draw") || 
+                         lower.includes("picture") || lower.includes("photo") || lower.includes("generate");
+
+    if (isQuestion && !isSpecialCmd) {
+      bubbleContent.innerHTML = '<span class="status-msg ring-anim">🔍 Searching web & fetching actual details...</span>';
+      webSearchResult = await queryOnlineKnowledge(prompt);
+    }
+
     setTimeout(() => {
       if (activeModel === 'consensus') {
-        runConsensusDebate(prompt, bubbleContent, typingBubble);
+        runConsensusDebate(prompt, bubbleContent, typingBubble, webSearchResult);
       } else {
         // Individual model response
         const modelData = AI_SIM_RESPONSES[activeModel];
-        const fullText = modelData.default(prompt);
+        let fullText;
+        
+        if (webSearchResult) {
+          // Format response with real web search details
+          if (activeModel === 'claude') {
+            fullText = `### Web Search Synthesis (Claude 3.5 Sonnet)
+
+Based on the actual details retrieved from web search:
+
+${webSearchResult.text}
+
+*Source: [${webSearchResult.source}](${webSearchResult.url})*
+
+***
+Let me know if you would like me to compile this into an interactive layout, draft code, or analyze further.`;
+          } else if (activeModel === 'chatgpt') {
+            fullText = `Here is the verified information I found regarding **"${escapeHtml(prompt)}"**:
+
+${webSearchResult.text}
+
+*Reference: [${webSearchResult.source}](${webSearchResult.url})*
+
+Is there anything specific you would like me to draft or calculate based on this? 🚀`;
+          } else { // gemini
+            fullText = `### Google Search Integration & Insights
+
+**Search Query**: *${escapeHtml(prompt)}*
+**Source**: ${webSearchResult.source} ([Reference Link](${webSearchResult.url}))
+
+${webSearchResult.text}
+
+Let me know if you want to run a multi-modal scan on additional files.`;
+          }
+        } else {
+          // Default mock response
+          fullText = modelData.default(prompt);
+        }
+
         typingBubble.className = `chat-message ${activeModel}`;
         typingBubble.querySelector(".avatar").textContent = activeModel === 'claude' ? '🍁' : (activeModel === 'chatgpt' ? '❇️' : '♊');
         
@@ -391,7 +446,7 @@ function appendSystemMessage(text) {
   conversation.scrollTop = conversation.scrollHeight;
 }
 
-function runConsensusDebate(prompt, targetBubbleContent, typingBubble) {
+function runConsensusDebate(prompt, targetBubbleContent, typingBubble, webSearchResult) {
   // Start debate streaming
   typingBubble.remove(); // Remove initial placeholder
   
@@ -400,8 +455,17 @@ function runConsensusDebate(prompt, targetBubbleContent, typingBubble) {
   const claudeBubble = claudeMsg.querySelector(".bubble");
   
   setTimeout(() => {
-    const claudeResp = `### Claude's Analysis:
+    let claudeResp;
+    if (webSearchResult) {
+      claudeResp = `### Claude's Analysis:
+Based on the retrieved knowledge query for *"_${escapeHtml(prompt)}_"*, the factual record indicates:
+> ${webSearchResult.text.slice(0, 200)}...
+
+We must systematically structure this details breakdown for clarity and citation.`;
+    } else {
+      claudeResp = `### Claude's Analysis:
 Based on logical decomposition of the request, my thesis suggests a modular single-tab view solves user-interface density issues. We must prioritize structural integrity.`;
+    }
     simulateStreamText(claudeBubble, claudeResp, () => {
       
       // 2. ChatGPT debates
@@ -409,8 +473,17 @@ Based on logical decomposition of the request, my thesis suggests a modular sing
       const gptBubble = gptMsg.querySelector(".bubble");
       
       setTimeout(() => {
-        const gptResp = `### ChatGPT's Response:
+        let gptResp;
+        if (webSearchResult) {
+          gptResp = `### ChatGPT's Response:
+Adding to Claude's factual report, this is super interesting! The core details mention:
+*"${webSearchResult.text.slice(0, 180)}..."*
+
+I suggest displaying these facts in clean, interactive layout modules so users can easily read it!`;
+        } else {
+          gptResp = `### ChatGPT's Response:
 I agree with Claude, but let's make it highly interactive! Users love sliders, bright neon glowing alerts, and fluid animation curves. We should add a Voice mode and Midjourney prompt builders to maximize retention.`;
+        }
         simulateStreamText(gptBubble, gptResp, () => {
           
           // 3. Gemini debates
@@ -418,8 +491,16 @@ I agree with Claude, but let's make it highly interactive! Users love sliders, b
           const gemBubble = gemMsg.querySelector(".bubble");
           
           setTimeout(() => {
-            const gemResp = `### Gemini's Synthesis:
+            let gemResp;
+            if (webSearchResult) {
+              gemResp = `### Gemini's Synthesis:
+According to Google search logs and Wikipedia indexing, the primary source for this factual data is **${webSearchResult.source}** ([Reference URL](${webSearchResult.url})).
+Here is the full text segment extracted:
+${webSearchResult.text.slice(0, 300)}...`;
+            } else {
+              gemResp = `### Gemini's Synthesis:
 According to Google search models, unified dashboards perform best when data sources are normalized. I advise integrating Google Sheets export cards and a multi-modal PDF upload gateway to support these recommendations.`;
+            }
             simulateStreamText(gemBubble, gemResp, () => {
               
               // 4. Synthesized consensus final bubble
@@ -427,13 +508,25 @@ According to Google search models, unified dashboards perform best when data sou
               const consensusBubble = consensusMsg.querySelector(".bubble");
               
               setTimeout(() => {
-                const finalConsensus = `### 🤝 Bayagra Consensus Report
+                let finalConsensus;
+                if (webSearchResult) {
+                  finalConsensus = `### 🤝 Bayagra Consensus Report
+All model agents have verified the online knowledge details:
+
+${webSearchResult.text}
+
+**Consolidated Citation Details:**
+- **Source**: [${webSearchResult.source}](${webSearchResult.url})
+- **Status**: Live, Verified Fact Check`;
+                } else {
+                  finalConsensus = `### 🤝 Bayagra Consensus Report
 Claude's structural focus, ChatGPT's interactive presets, and Gemini's workspace integrations have been consolidated. 
 
 **Definitive Solution Vector:**
 - We will construct a sleek **Glassmorphic Sidebar SPA**.
 - Integrate the original **Urban Triage Core** under a dedicated tab.
 - Provide unified access to caller lookups, search modules, voice laboratories, and art builders.`;
+                }
                 simulateStreamText(consensusBubble, finalConsensus);
               }, 1200);
               

@@ -515,3 +515,46 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 }
+
+// Fetch live web knowledge using DuckDuckGo Instant Answer API and Wikipedia Search API
+async function queryOnlineKnowledge(query) {
+  // 1. Try DuckDuckGo Instant Answers
+  try {
+    const ddgRes = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&origin=*`);
+    const ddgData = await ddgRes.json();
+    if (ddgData.AbstractText) {
+      return {
+        text: ddgData.AbstractText,
+        source: ddgData.AbstractSource || 'Wikipedia',
+        url: ddgData.AbstractURL
+      };
+    }
+  } catch (e) {
+    console.warn("DDG API failed, trying Wikipedia...");
+  }
+
+  // 2. Try Wikipedia Search API
+  try {
+    const wikiSearchRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&list=search&srsearch=${encodeURIComponent(query)}`);
+    const wikiSearchData = await wikiSearchRes.json();
+    if (wikiSearchData.query && wikiSearchData.query.search && wikiSearchData.query.search.length > 0) {
+      const pageId = wikiSearchData.query.search[0].pageid;
+      const title = wikiSearchData.query.search[0].title;
+      
+      const wikiExtractRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&exintro&explaintext&redirects=1&pageids=${pageId}`);
+      const wikiExtractData = await wikiExtractRes.json();
+      const pageData = wikiExtractData.query.pages[pageId];
+      if (pageData && pageData.extract) {
+        return {
+          text: pageData.extract,
+          source: 'Wikipedia',
+          url: `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`
+        };
+      }
+    }
+  } catch (e) {
+    console.warn("Wikipedia API failed.");
+  }
+
+  return null;
+}
