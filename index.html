@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.4">
+  <link rel="stylesheet" href="styles.css?v=1.5">
 </head>
 <body class="bayagra-dark">
 
@@ -362,6 +362,36 @@
               <div class="lookup-empty-state">
                 Enter a number above to run identity lookup.
               </div>
+            </div>
+
+            <!-- Registry Editor Section -->
+            <div class="registry-editor-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--panel-border);">
+              <h3 style="font-size: 1rem; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <span>📝</span> Register / Edit Caller Directory
+              </h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Add or modify phone numbers with original user details.</p>
+              
+              <form id="truecaller-registry-form" class="stack compact" style="gap: 10px;">
+                <div style="display: flex; gap: 8px;">
+                  <input type="tel" id="reg-phone" placeholder="Phone (e.g. 919578799164)" required style="flex: 1; padding: 8px 12px; font-size: 0.85rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--panel-border); color: white; border-radius: 12px;">
+                  <input type="text" id="reg-name" placeholder="Full Name" required style="flex: 1; padding: 8px 12px; font-size: 0.85rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--panel-border); color: white; border-radius: 12px;">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="reg-location" placeholder="Location (e.g. Chennai, India)" required style="flex: 1; padding: 8px 12px; font-size: 0.85rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--panel-border); color: white; border-radius: 12px;">
+                  <input type="text" id="reg-company" placeholder="Affiliation/Company" required style="flex: 1; padding: 8px 12px; font-size: 0.85rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--panel-border); color: white; border-radius: 12px;">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <input type="email" id="reg-email" placeholder="Email Address" required style="flex: 1; padding: 8px 12px; font-size: 0.85rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--panel-border); color: white; border-radius: 12px;">
+                  <select id="reg-trust" style="flex: 1; padding: 8px 12px; font-size: 0.85rem; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--panel-border); color: white; border-radius: 12px;">
+                    <option value="Verified">Verified</option>
+                    <option value="Trusted">Trusted</option>
+                    <option value="Suspicious">Suspicious</option>
+                    <option value="Dangerous">Dangerous</option>
+                  </select>
+                </div>
+                <button type="submit" class="search-submit" style="background: linear-gradient(135deg, var(--accent-truecaller), var(--accent-chatgpt)); margin-top: 5px; font-size: 0.85rem; padding: 10px;">Save Identity to Database</button>
+                <p id="reg-status-msg" style="font-size: 0.8rem; text-align: center; margin-top: 5px; font-weight: 500; min-height: 18px;"></p>
+              </form>
             </div>
           </div>
           
@@ -765,9 +795,9 @@
     </div>
   </div>
 
-  <script src="snake-logic.js?v=1.4"></script>
-  <script src="snake-game.js?v=1.4"></script>
-  <script src="bayagra.js?v=1.4"></script>
-  <script src="app.js?v=1.4"></script>
+  <script src="snake-logic.js?v=1.5"></script>
+  <script src="snake-game.js?v=1.5"></script>
+  <script src="bayagra.js?v=1.5"></script>
+  <script src="app.js?v=1.5"></script>
 </body>
 </html>
