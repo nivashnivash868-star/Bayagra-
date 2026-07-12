@@ -15,24 +15,61 @@
   <div class="login-wrapper" id="login-container">
     <div class="login-glow-bg"></div>
     <div class="login-card">
-      <div class="login-card-head">
-        <div class="brand-glow-dot large"></div>
-        <h2>bayagra</h2>
-        <p>Unified AI Cockpit</p>
+      <!-- Login Section -->
+      <div id="login-section">
+        <div class="login-card-head">
+          <div class="brand-glow-dot large"></div>
+          <h2>bayagra</h2>
+          <p>Unified AI Cockpit</p>
+        </div>
+        <form id="login-form" class="stack compact">
+          <label>
+            <span>Username</span>
+            <input type="text" id="login-username" placeholder="Enter username (admin)" required autocomplete="username">
+          </label>
+          <label>
+            <span>Password</span>
+            <input type="password" id="login-password" placeholder="Enter password (admin)" required autocomplete="current-password">
+          </label>
+          <button type="submit" class="login-submit-btn">Unlock Workspace</button>
+          <p class="login-helper-text" style="margin-top: 10px;">Don't have an account? <a href="#" id="link-to-signup" style="color: var(--accent-truecaller); text-decoration: none; font-weight: 600;">Sign Up</a></p>
+          <p class="login-error-msg" id="login-error"></p>
+        </form>
       </div>
-      <form id="login-form" class="stack compact">
-        <label>
-          <span>Username</span>
-          <input type="text" id="login-username" placeholder="Enter username (admin)" required autocomplete="username">
-        </label>
-        <label>
-          <span>Password</span>
-          <input type="password" id="login-password" placeholder="Enter password (admin)" required autocomplete="current-password">
-        </label>
-        <div class="login-helper-text">Hint: use <strong>admin</strong> / <strong>admin</strong></div>
-        <button type="submit" class="login-submit-btn">Unlock Workspace</button>
-        <p class="login-error-msg" id="login-error"></p>
-      </form>
+
+      <!-- Sign Up Section -->
+      <div id="signup-section" style="display: none;">
+        <div class="login-card-head">
+          <div class="brand-glow-dot large"></div>
+          <h2>Create Account</h2>
+          <p>Register a new Bayagra profile</p>
+        </div>
+        <form id="signup-form" class="stack compact">
+          <label>
+            <span>Full Name</span>
+            <input type="text" id="signup-name" placeholder="John Doe" required autocomplete="name">
+          </label>
+          <label>
+            <span>Email Address</span>
+            <input type="email" id="signup-email" placeholder="john@example.com" required autocomplete="email">
+          </label>
+          <label>
+            <span>Username</span>
+            <input type="text" id="signup-username" placeholder="Choose username" required autocomplete="username">
+          </label>
+          <label>
+            <span>Password</span>
+            <input type="password" id="signup-password" placeholder="Choose password" required autocomplete="new-password">
+          </label>
+          <label>
+            <span>Confirm Password</span>
+            <input type="password" id="signup-confirm" placeholder="Confirm password" required autocomplete="new-password">
+          </label>
+          <button type="submit" class="login-submit-btn" style="background: linear-gradient(135deg, var(--accent-chatgpt), var(--accent-truecaller));">Create Account</button>
+          <p class="login-helper-text" style="margin-top: 10px;">Already have an account? <a href="#" id="link-to-login" style="color: var(--accent-truecaller); text-decoration: none; font-weight: 600;">Log In</a></p>
+          <p class="login-error-msg" id="signup-error-msg"></p>
+        </form>
+      </div>
     </div>
   </div>
 
