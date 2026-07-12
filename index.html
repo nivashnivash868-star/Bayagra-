@@ -11,8 +11,33 @@
 </head>
 <body class="bayagra-dark">
 
+  <!-- LOGIN PAGE SCREEN -->
+  <div class="login-wrapper" id="login-container">
+    <div class="login-glow-bg"></div>
+    <div class="login-card">
+      <div class="login-card-head">
+        <div class="brand-glow-dot large"></div>
+        <h2>bayagra</h2>
+        <p>Unified AI Cockpit</p>
+      </div>
+      <form id="login-form" class="stack compact">
+        <label>
+          <span>Username</span>
+          <input type="text" id="login-username" placeholder="Enter username (admin)" required autocomplete="username">
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" id="login-password" placeholder="Enter password (admin)" required autocomplete="current-password">
+        </label>
+        <div class="login-helper-text">Hint: use <strong>admin</strong> / <strong>admin</strong></div>
+        <button type="submit" class="login-submit-btn">Unlock Workspace</button>
+        <p class="login-error-msg" id="login-error"></p>
+      </form>
+    </div>
+  </div>
+
   <!-- Main Grid Workspace Layout -->
-  <div class="workspace-wrapper">
+  <div class="workspace-wrapper" id="workspace-layout" style="display: none;">
     
     <!-- Sidebar Navigation -->
     <aside class="workspace-sidebar">
@@ -46,6 +71,10 @@
         <button type="button" class="nav-item" data-tab="triage">
           <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4M12,18A2,2 0 0,1 10,16A2,2 0 0,1 12,14A2,2 0 0,1 14,16A2,2 0 0,1 12,18M12,13A2,2 0 0,1 10,11A2,2 0 0,1 12,9A2,2 0 0,1 14,11A2,2 0 0,1 12,13Z"/></svg>
           <span>Urban Triage Core</span>
+        </button>
+        <button type="button" class="nav-item logout-btn" id="sidebar-logout" style="margin-top: 10px; border-color: rgba(239, 68, 68, 0.15); color: #f87171;">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M16.56,5.44L15.11,6.89C16.84,8.27 18,10.5 18,13A6,6 0 0,1 12,19A6,6 0 0,1 6,13C6,10.5 7.16,8.27 8.89,6.89L7.44,5.44C5.36,7.22 4,9.95 4,13A8,8 0 0,0 12,21A8,8 0 0,0 20,13C20,9.95 18.64,7.22 16.56,5.44M13,3H11V13H13V3Z"/></svg>
+          <span>Log Out</span>
         </button>
       </nav>
       

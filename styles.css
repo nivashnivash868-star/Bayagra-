@@ -1825,3 +1825,115 @@ tbody tr:hover, tbody tr.active {
     display: none;
   }
 }
+
+/* LOGIN SCREEN STYLES */
+.login-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  background-color: var(--bg-dark);
+  overflow: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.login-glow-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--border-radius);
+  padding: 40px 30px;
+  backdrop-filter: blur(25px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.15);
+  z-index: 2;
+  position: relative;
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.login-card-head {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.brand-glow-dot.large {
+  width: 16px;
+  height: 16px;
+  margin: 0 auto 12px;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+}
+
+.login-card-head h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fff, var(--text-muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.login-card-head p {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+}
+
+.login-helper-text {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.login-helper-text strong {
+  color: var(--text-muted);
+}
+
+.login-submit-btn {
+  background: linear-gradient(135deg, var(--accent-gemini-start), var(--accent-gemini-end));
+  border: none;
+  color: white;
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-neon-purple);
+}
+
+.login-error-msg {
+  font-size: 0.82rem;
+  color: #f87171;
+  text-align: center;
+  margin-top: 10px;
+  min-height: 18px;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #f87171 !important;
+}
+

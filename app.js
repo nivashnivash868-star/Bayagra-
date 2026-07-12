@@ -17,7 +17,11 @@ const state = {
 let currentSpeechUtterance = null;
 
 // Initialize all features on load
+// Initialize all features on load
 async function bootstrap() {
+  // 0. Initialize Login and Authentication
+  initLogin();
+
   // 1. Load original municipal services metadata and issues
   await Promise.all([loadMetadata(), loadIssues(), loadTrends()]);
   bindMunicipalForms();
@@ -30,6 +34,80 @@ async function bootstrap() {
   initTruecallerConsole();
   initPerplexitySearch();
   initCreativeStudio();
+}
+
+function initLogin() {
+  const loginContainer = document.getElementById("login-container");
+  const workspaceLayout = document.getElementById("workspace-layout");
+  const loginForm = document.getElementById("login-form");
+  const usernameInput = document.getElementById("login-username");
+  const passwordInput = document.getElementById("login-password");
+  const errorMsg = document.getElementById("login-error");
+  const logoutBtn = document.getElementById("sidebar-logout");
+
+  // Check current session state
+  if (sessionStorage.getItem("bayagra_auth") === "true") {
+    loginContainer.style.display = "none";
+    workspaceLayout.style.display = "grid";
+    workspaceLayout.style.opacity = "1";
+  } else {
+    loginContainer.style.display = "flex";
+    workspaceLayout.style.display = "none";
+  }
+
+  // Handle Login submission
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (username === "admin" && password === "admin") {
+      errorMsg.textContent = "";
+      sessionStorage.setItem("bayagra_auth", "true");
+      
+      // Animate fade out of login container
+      loginContainer.style.opacity = "0";
+      loginContainer.style.transform = "scale(0.95)";
+      
+      setTimeout(() => {
+        loginContainer.style.display = "none";
+        workspaceLayout.style.display = "grid";
+        workspaceLayout.style.opacity = "0";
+        workspaceLayout.style.transition = "opacity 0.4s ease";
+        
+        setTimeout(() => {
+          workspaceLayout.style.opacity = "1";
+        }, 50);
+      }, 400);
+
+    } else {
+      errorMsg.textContent = "Invalid username or password. Please try again.";
+      passwordInput.value = "";
+    }
+  });
+
+  // Handle Logout
+  logoutBtn.addEventListener("click", () => {
+    sessionStorage.removeItem("bayagra_auth");
+    
+    // Animate fade out of workspace and reveal login
+    workspaceLayout.style.opacity = "0";
+    
+    setTimeout(() => {
+      workspaceLayout.style.display = "none";
+      loginContainer.style.display = "flex";
+      loginContainer.style.opacity = "0";
+      loginContainer.style.transform = "scale(0.95)";
+      
+      setTimeout(() => {
+        loginContainer.style.opacity = "1";
+        loginContainer.style.transform = "scale(1)";
+        usernameInput.value = "";
+        passwordInput.value = "";
+        errorMsg.textContent = "";
+      }, 50);
+    }, 400);
+  });
 }
 
 // -------------------------------------------------------------
