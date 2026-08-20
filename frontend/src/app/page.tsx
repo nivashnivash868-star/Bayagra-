@@ -9,7 +9,11 @@ import {
   FileCode, Play, Menu, ChevronDown
 } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = typeof window !== 'undefined'
+  ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:8000/api'
+      : '/api')
+  : 'http://localhost:8000/api';
 
 // Fallback Mock Data in case backend is unreachable
 const LOCAL_MOCK_CASE = {
