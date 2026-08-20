@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: #070a13;
+    --foreground: #f8fafc;
+    --card: #0e1322;
+    --card-foreground: #f8fafc;
+    --popover: #070a13;
+    --popover-foreground: #f8fafc;
+    --primary: #10b981;
+    --primary-foreground: #070a13;
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --accent: #1e293b;
+    --accent-foreground: #f8fafc;
+    --destructive: #ef4444;
+    --destructive-foreground: #f8fafc;
+    --border: #1e293b;
+    --input: #1e293b;
+    --ring: #10b981;
+  }
+}
+
+body {
+  background-color: #070a13;
+  color: #f8fafc;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070a13;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* Cyber Matrix Background Effect */
+.bg-cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+}
+
+/* Glassmorphism panels */
+.glass-panel {
+  background: rgba(14, 19, 34, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-panel-accent {
+  background: rgba(16, 185, 129, 0.02);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+/* Scanning line animations */
+@keyframes scan {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+.scanner-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #10b981, transparent);
+  animation: scan 3s linear infinite;
+  opacity: 0.7;
+}
+
+/* LED Blinkers */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.led-blink-green {
+  animation: blink 1.5s infinite;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.led-blink-red {
+  animation: blink 1s infinite;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.led-blink-amber {
+  animation: blink 1.2s infinite;
+  box-shadow: 0 0 8px #f59e0b;
+}

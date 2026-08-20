@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+/frontend/node_modules
+/backend/venv
+venv/
+.venv/
+env/
+.env/
+
+# Next.js / frontend build
+.next/
+/frontend/.next
+/frontend/out
+/frontend/build
+*.tsbuildinfo
+frontend/next-env.d.ts
+
+# Python / backend build
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDE / OS metadata
+.DS_Store
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Environment files
+.env
+.env*.local

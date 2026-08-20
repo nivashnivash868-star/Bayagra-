@@ -1,0 +1,18 @@
+{
+  "name": "bayagra-platform",
+  "version": "1.0.0",
+  "description": "Bayagra - Full-Stack Cybersecurity Investigation and Threat Intelligence Platform",
+  "scripts": {
+    "setup": "npm run install:all && npm run backend:setup",
+    "install:all": "npm install && npm install --prefix frontend",
+    "backend:setup": "python3 -m venv backend/venv && ./backend/venv/bin/pip install -r backend/requirements.txt",
+    "dev": "concurrently --kill-others-on-fail \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "backend:dev": "./backend/venv/bin/uvicorn backend.main:app --reload --port 8000",
+    "frontend:dev": "npm run dev --prefix frontend",
+    "test:backend": "./backend/venv/bin/pytest backend/tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
